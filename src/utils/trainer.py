@@ -206,8 +206,8 @@ class Trainer(object):
         )
 
         self.smoketest = smoketest
-        self.logger = Logger(columns=["loss"], modes=["train"], csv=os.path.join(outdir,visdom_environment+".csv"))
-        self.vizlogger = VisdomLogger(env=visdom_environment,use_incoming_socket=False) # server='http://129.187.92.97',port=1234,log_to_filename="visdom.log",
+        # self.logger = Logger(columns=["loss"], modes=["train"], csv=os.path.join(outdir,visdom_environment+".csv"))
+        # self.vizlogger = VisdomLogger(env=visdom_environment,use_incoming_socket=False) # server='http://129.187.92.97',port=1234,log_to_filename="visdom.log",
 
     def hook(self, name):
         if name in self.hooks:
@@ -223,7 +223,7 @@ class Trainer(object):
                 #nvidia_tools.log_gpu_statistics()
 
             for epoch in range(start_epoch + 1, num_epochs + 1):
-                self.logger.update_epoch(epoch)
+                # self.logger.update_epoch(epoch)
                 # Print current memory usage for GPU
                 # print(torch.cuda.memory_allocated())
                 print('Epoch', epoch)
@@ -240,8 +240,8 @@ class Trainer(object):
                 if epoch % SNAPSHOT_EVERY_EPOCHS == 0:
                     self.snapshot(epoch)
 
-                if self.logger is not None:
-                    self.logger.save_csv()
+                # if self.logger is not None:
+                #     self.logger.save_csv()
 
             self.hook('on_end_training')
             return self.state
@@ -270,7 +270,7 @@ class Trainer(object):
         )
 
     def train_epoch(self, epoch):
-        self.logger.set_mode("train")
+        # self.logger.set_mode("train")
         printer = IntervalPrinter(1, PRINT_FORMAT_TRAIN)
         network = self.state['network']
         loss = self.state['loss']
@@ -306,25 +306,25 @@ class Trainer(object):
             train_metric = metric(target, output)
             train_metric['loss'] = l.data.cpu().numpy()
 
-            if self.logger is not None:
-                self.logger.log(train_metric.copy(), iteration)
+            # if self.logger is not None:
+            #     self.logger.log(train_metric.copy(), iteration)
 
             if iteration % PRINT_EVERY_N_ITERATIONS == 0:
                 printer.update(metric=dict2string(train_metric))
 
-                if self.vizlogger.is_available:
-                    self.vizlogger.plot_steps(self.logger.get_data())
+                # if self.vizlogger.is_available:
+                #     self.vizlogger.plot_steps(self.logger.get_data())
 
-            if iteration % LOG_NGC_EVERY_N_ITERATIONS == 0 and LOG_NGC_DICT:
-                nvidia_tools.log_ngc_dict(train_metric, prefix="train")
+            # if iteration % LOG_NGC_EVERY_N_ITERATIONS == 0 and LOG_NGC_DICT:
+            #     nvidia_tools.log_ngc_dict(train_metric, prefix="train")
 
-            if iteration % GPU_USAGE_EVERY_N_ITERATIONS == 0 and \
-                    torch.cuda.is_available() and LOG_NGC_DICT:
-                nvidia_tools.log_gpu_statistics()
+            # if iteration % GPU_USAGE_EVERY_N_ITERATIONS == 0 and \
+            #         torch.cuda.is_available() and LOG_NGC_DICT:
+            #     nvidia_tools.log_gpu_statistics()
 
-            if iteration % LOG_NGC_EVERY_N_ITERATIONS == 0 and not LOG_NGC_DICT:
-                push_ngc_telemetry("train_iou_building", train_metric["iou_building"])
-                push_ngc_telemetry("train_loss", train_metric["loss"])
+            # if iteration % LOG_NGC_EVERY_N_ITERATIONS == 0 and not LOG_NGC_DICT:
+            #     push_ngc_telemetry("train_iou_building", train_metric["iou_building"])
+            #     push_ngc_telemetry("train_loss", train_metric["loss"])
 
             if self.smoketest:
                 print("Smoketest! Stopping training early after one iteration")
@@ -335,7 +335,7 @@ class Trainer(object):
         return train_metric
 
     def validate_epoch(self, epoch):
-        self.logger.set_mode("test")
+        # self.logger.set_mode("test")
         printer = IntervalPrinter(1, PRINT_FORMAT_VAL)
         network = self.state['network']
         loss = self.state['loss']
@@ -368,34 +368,34 @@ class Trainer(object):
             val_metric = metric(target, output)
             val_metric['loss'] = l.data.cpu().numpy()  # loss_metric(l.data[0]).cpu().numpy()
 
-            if self.logger is not None:
-                self.logger.log(val_metric.copy(), iteration)
+            # if self.logger is not None:
+            #     self.logger.log(val_metric.copy(), iteration)
 
             if iteration % PRINT_EVERY_N_ITERATIONS == 0:
                 printer.update(metric=dict2string(val_metric))
 
-                if self.vizlogger.is_available:
-                    self.vizlogger.plot_steps(self.logger.get_data())
-                    self.vizlogger.plot_images(target=target.cpu().numpy(), output=output.cpu().numpy())
+                # if self.vizlogger.is_available:
+                #     self.vizlogger.plot_steps(self.logger.get_data())
+                #     self.vizlogger.plot_images(target=target.cpu().numpy(), output=output.cpu().numpy())
 
-            if iteration % LOG_NGC_EVERY_N_ITERATIONS == 0 and LOG_NGC_DICT:
-                nvidia_tools.log_ngc_dict(val_metric, prefix="val")
+            # if iteration % LOG_NGC_EVERY_N_ITERATIONS == 0 and LOG_NGC_DICT:
+            #     nvidia_tools.log_ngc_dict(val_metric, prefix="val")
 
-            if iteration % GPU_USAGE_EVERY_N_ITERATIONS == 0 and \
-                    torch.cuda.is_available() and LOG_NGC_DICT:
-                nvidia_tools.log_gpu_statistics()
+            # if iteration % GPU_USAGE_EVERY_N_ITERATIONS == 0 and \
+            #         torch.cuda.is_available() and LOG_NGC_DICT:
+            #     nvidia_tools.log_gpu_statistics()
 
-            if iteration % LOG_NGC_EVERY_N_ITERATIONS == 0 and not LOG_NGC_DICT:
-                push_ngc_telemetry("val_iou_building", val_metric["iou_building"])
-                push_ngc_telemetry("val_loss", val_metric["loss"])
+            # if iteration % LOG_NGC_EVERY_N_ITERATIONS == 0 and not LOG_NGC_DICT:
+            #     push_ngc_telemetry("val_iou_building", val_metric["iou_building"])
+            #     push_ngc_telemetry("val_loss", val_metric["loss"])
 
             if self.smoketest:
                 print("Smoketest! Stopping validation early after one iteration")
                 break
 
-        if self.vizlogger.is_available:
-            self.vizlogger.update(self.logger.get_data())
-            self.vizlogger.plot_images(target=target.cpu().numpy(), output=output.cpu().numpy())
+        # if self.vizlogger.is_available:
+        #     self.vizlogger.update(self.logger.get_data())
+        #     self.vizlogger.plot_images(target=target.cpu().numpy(), output=output.cpu().numpy())
 
         self.hook('validation_end')
 

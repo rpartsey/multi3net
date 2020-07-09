@@ -5,8 +5,8 @@ import cv2
 
 
 def tiff_to_nd_array(file_path):
-    file = rasterio.open(file_path)
-    bands = file.read()
+    with rasterio.open(file_path) as file:
+        bands = file.read()
     return bands
 
 

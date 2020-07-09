@@ -73,7 +73,7 @@ def main(
     else:
         raise ValueError("Please insert a valid experiment id. Valid experiments are 'vhr', 's1', 's2', 'vhrs1, 'vhrs2', 'vhrs1s2'")
 
-    network = nn.DataParallel(network)
+    # network = nn.DataParallel(network)
     if torch.cuda.is_available():
         network = network.cuda()
 
@@ -132,8 +132,8 @@ if __name__ == '__main__':
             args.lradapt,
             args.experiment,
             args.labelimage,
-            args.trainpath,
-            args.validpath
+            trainpath=args.trainpath,
+            validpath=args.validpath
         )
     except KeyboardInterrupt:
         pass

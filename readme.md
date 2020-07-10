@@ -54,7 +54,7 @@ visdom
 run tests
 ```bash
 export TRAINDATA_PATH=$PWD/data/east
-export VALIDATA_PATH=$PWD/data/east
+export VALIDATA_PATH=$PWD/data/west
 
 cd src
 python unittests.py

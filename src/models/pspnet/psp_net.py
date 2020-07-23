@@ -67,7 +67,7 @@ class PSPNet(nn.Module):
 
 
     def forward(self, x):
-        x = Variable(x['vhr'].float()).cuda()
+        x = Variable(x['vhr'].float()).to('cuda:2')
         f = self.backend.forward(x)
         p = self.psp(f)
         p = self.drop_1(p)

@@ -204,7 +204,7 @@ class DamageNetVHR_SimpleFusion(nn.Module):
     def forward(self, input):
         for item in input:
             if torch.cuda.is_available():
-                input['{}'.format(item)] = Variable(x[item].float()).cuda()
+                input['{}'.format(item)] = Variable(x[item].float()).to('cuda:2')
             else:
                 input['{}'.format(item)] = Variable(x[item].float())
 

@@ -175,11 +175,11 @@ class PSPNet(nn.Module):
     def forward(self, input):
         for item in input:
             if torch.cuda.is_available():
-                input['{}'.format(item)] = Variable(input[item].float()).cuda()
+                input['{}'.format(item)] = Variable(input[item].float()).to('cuda:2')
             else:
                 input['{}'.format(item)] = Variable(input[item].float())
 
-        vhr = Variable(input['vhr'].float()).cuda()
+        vhr = Variable(input['vhr'].float()).to('cuda:2')
 
 #
         f = self.backend.forward(vhr)

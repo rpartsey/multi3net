@@ -115,7 +115,7 @@ class DamageNetVHR(nn.Module):
     def forward(self, x):
         for item in x:
             if torch.cuda.is_available():
-                x['{}'.format(item)] = Variable(x[item].float()).cuda()
+                x['{}'.format(item)] = Variable(x[item].float()).to('cuda:2')
             else:
                 x['{}'.format(item)] = Variable(x[item].float())
 

@@ -75,7 +75,7 @@ def main(
 
     # network = nn.DataParallel(network)
     if torch.cuda.is_available():
-        network = network.cuda()
+        network = network.to('cuda:2')
 
     if finetune or snapshot:
         resume(finetune or snapshot, network, None)
@@ -89,7 +89,7 @@ def main(
 
     loss = nn.NLLLoss2d()
     if torch.cuda.is_available():
-        loss = loss.cuda()
+        loss = loss.to('cuda:2')
 
     trainer = Trainer(
         network, optimizer, scheduler, loss, train, val,

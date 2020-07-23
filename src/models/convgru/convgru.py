@@ -37,7 +37,7 @@ class ConvGRUCell(nn.Module):
         if prev_state is None:
             state_size = [batch_size, self.hidden_size] + list(spatial_size)
             if torch.cuda.is_available():
-                prev_state = Variable(torch.zeros(state_size)).cuda()
+                prev_state = Variable(torch.zeros(state_size)).to('cuda:2')
             else:
                 prev_state = Variable(torch.zeros(state_size))
 

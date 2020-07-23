@@ -104,13 +104,13 @@ def main(
     metric = classmetric()
 
     if torch.cuda.is_available():
-        network = network.cuda()
+        network = network.to('cuda:2')
 
     if loadvgg == True:
         network.load_vgg16_weights()
 
     if torch.cuda.is_available():
-       network = nn.DataParallel(network).cuda()
+       network = nn.DataParallel(network).to('cuda:2')
     # else:
     #    network = nn.DataParallel(network)
 
@@ -132,7 +132,7 @@ def main(
         target = upsample(data[2]["label"])
 
         if torch.cuda.is_available():
-            target = Variable(target.float()).cuda()
+            target = Variable(target.float()).to('cuda:2')
         else:
             target = Variable(target.float())
 
@@ -152,8 +152,8 @@ def main(
 
         # convert zo W x H x C
         if torch.cuda.is_available():
-            prediction = output.data.cuda()[0].permute(1, 2, 0)
-            target = target.data.cuda()[0].permute(1, 2, 0)
+            prediction = output.data.to('cuda:2')[0].permute(1, 2, 0)
+            target = target.data.to('cuda:2')[0].permute(1, 2, 0)
         else:
             prediction = output.data[0].permute(1, 2, 0)
             target = target.data[0].permute(1, 2, 0)
